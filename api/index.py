@@ -30,7 +30,6 @@ app = Flask(__name__)
 
 # The route for the Slack events
 @app.route('/api/slack/start', methods=['POST'])
-
 def handle_start_slash():
     data = request.get_data().decode('utf-8')
     # parse URL-encoded data
@@ -109,6 +108,64 @@ def handle_summary_slash():
         return "", 200
     except SlackApiError as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route('/api/slack/add', methods=['POST'])
+def handle_add_slash():
+    data = request.get_data().decode('utf-8')
+    # parse URL-encoded data
+    payload = unquote_plus(data)
+
+    if payload.startswith('payload='):
+        payload = payload[len('payload='):]
+  
+    if not signature_verifier.is_valid_request(data, request.headers):
+        return jsonify({'status': 'invalid_request'}), 403
+    
+    event = parse_qs(payload)
+
+    if event is None:
+        return jsonify({"status": "error", "message": "missing_payload"}), 400
+    
+    user_id = event['user_id'][0]
+    valid, _ = db_valid_member(user_id)
+
+    try:
+        if valid:
+            web_client.views_open(trigger_id=event["trigger_id"], view={
+                "type": "modal",
+                "title": {"type": "plain_text", "text": "My App"},
+                "close": {"type": "plain_text", "text": "Close"},
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "About the simplest modal you could conceive of :smile:\n\nMaybe <https://api.slack.com/reference/block-kit/interactive-components|*make the modal interactive*> or <https://api.slack.com/surfaces/modals/using#modifying|*learn more advanced modal use cases*>.",
+                        },
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "Psssst this modal was designed using <https://api.slack.com/tools/block-kit-builder|*Block Kit Builder*>",
+                            }
+                        ],
+                    },
+                ],
+            },
+        )
+        else:
+            web_client.chat_postMessage(
+            channel=user_id,
+            text=f"Hmmm... It seems like you are not a part of a project yet or you don't need to test participants right now. If you think this is a mistake, reach out to the lab coordinator."
+            )
+
+        return "", 200
+    except SlackApiError as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 
 # if __name__ == "__main__":
 #     app.run(port=3000)
