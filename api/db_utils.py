@@ -5,7 +5,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
 
-cred = credentials.Certificate(json.loads(os.getenv("GOOGLE_CLOUD_CERT")))
+# cred = credentials.Certificate(json.loads(os.getenv("GOOGLE_CLOUD_CERT")))
+cred = credentials.Certificate("cloud_cert.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -32,3 +33,16 @@ def db_get_user_events(user_id):
             text += '\n'
     return text
                 
+def db_get_day_events(day):
+    '''Returns an array of time slots and event locations for a specific day sorted by begin time'''
+    day_event_ref = db.collection(day)
+    docs = day_event_ref.stream()
+
+    time_list = []
+    for doc in docs:
+        info = doc.to_dict()
+        time_list.append([info["time_begin"], info["time_end"], info["location"]])
+    return time_list
+
+def db_get_user_info(user_id):
+    return db.collection("users").document(user_id).get().to_dict()
