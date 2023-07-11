@@ -1,6 +1,6 @@
 import json
 from datetime import time, timedelta, datetime
-from api.db_utils import db_get_day_events
+# from api.db_utils import db_get_day_events
 
 def get_modal(modal_name):
     with open(modal_name, 'r') as f:
@@ -41,3 +41,13 @@ def verify_day_time(tbegin, tend, day, location):
         if (delta > 0) and (location == event[2]):
             return "There was a scheduling conflict", False
     return "✅ Great! Your request has been submitted to the approver. Once they approve you, you will get a message.", True
+
+def determine_effective():
+    now = datetime.now()
+    now_weekday = now.weekday()
+    if now_weekday <= 2:
+        effective = now + timedelta(days= 7 - now_weekday)
+        return effective.replace(hour=0, minute=0)
+    elif now_weekday > 2:
+        effective = now + timedelta(days= (7 - now_weekday) + 7)
+        return effective.replace(hour=0, minute=0)
