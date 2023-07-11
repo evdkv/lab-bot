@@ -1,6 +1,6 @@
 import json
 from datetime import time, timedelta, datetime
-# from api.db_utils import db_get_day_events
+from api.db_utils import db_get_day_events
 
 def get_modal(modal_name):
     with open(modal_name, 'r') as f:
