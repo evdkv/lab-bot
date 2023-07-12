@@ -1,15 +1,17 @@
-import os
-import json
-import firebase_admin
+import firebase_admin, random, string, json, os
 from firebase_admin import credentials
 from firebase_admin import firestore
-from dotenv import load_dotenv
+from datetime import datetime, time
 
-# cred = credentials.Certificate(json.loads(os.getenv("GOOGLE_CLOUD_CERT")))
-cred = credentials.Certificate("cloud_cert.json")
+cred = credentials.Certificate(json.loads(os.getenv("GOOGLE_CLOUD_CERT")))
+# cred = credentials.Certificate("cloud_cert.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
+def randomword(length):
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(length))
 
 def db_valid_member(user_id):
     users_ref = db.collection("users")
@@ -46,3 +48,13 @@ def db_get_day_events(day):
 
 def db_get_user_info(user_id):
     return db.collection("users").document(user_id).get().to_dict()
+
+def db_add_event(data, effective):
+    uinf = db_get_user_info(data["requester"])
+    doc_id = randomword(5)
+    record = {"name" : uinf["name"], "color" : uinf["color"], "location" : uinf["location"],
+              "time_begin" : time.strftime(time(int(data["tbegin"].split(':')[0]), int(data["tbegin"].split(':')[1])), "%I:%M%p"),
+              "time_end" : time.strftime(time(int(data["tend"].split(':')[0]), int(data["tend"].split(':')[1])), "%I:%M%p"),
+              "day" : data["day"], "effective" : effective}
+    db.collection(data["day"]).document(doc_id).set(record)
+    return True
