@@ -44,7 +44,7 @@ def add_slot_request(payload, user_db_info, user_id):
     try:
         if is_valid_time:
             approver_attachment = get_modal("add_req_attachment.json")
-            approver_attachment["blocks"][1]["text"]["text"] = f"*Name:* <@{approver_id}>\t *Request:* " \
+            approver_attachment["blocks"][1]["text"]["text"] = f"*Name:* <@{user_id}>\t *Request:* " \
                                                                 f"Add a slot\n*Begin:* {tbegin}\t *End:* {tend}\n *Day:* {day}"
             web_client.chat_postMessage(
                 channel=user_id,
@@ -115,7 +115,7 @@ def add_slot_deny(payload, user_id):
     try:
         updated_attachment = payload["message"]["attachments"][0]["blocks"][:2]
         updated_attachment.append({"type": "section", "text": {"type": "mrkdwn", 
-                                    "text": "🛑 *Request has been denied! The requester was notified*"}})
+                                   "text": "🛑 *Request has been denied! The requester was notified*"}})
         updated_attachment = [{"color" : "#f2c744", "blocks" : updated_attachment}]
         web_client.chat_update(
             channel=user_id,
