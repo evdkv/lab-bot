@@ -3,7 +3,7 @@ from datetime import time, timedelta, datetime
 from api.db_utils import db_get_day_events
 
 def get_modal(modal_name):
-    with open(modal_name, 'r') as f:
+    with open("resp/" + modal_name, 'r') as f:
         read = json.load(f)
     return read
 
