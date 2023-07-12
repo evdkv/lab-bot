@@ -1,0 +1,194 @@
+{
+	"type": "modal",
+	"callback_id" : "add_slot_form",
+	"title": {
+		"type": "plain_text",
+		"text": "Robbins Lab Bot",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Add a new time slot",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Add a time slot using this form. Please check the calendar and make sure the time you are signing up for is available. It is okay to test at the same time in different rooms."
+			}
+		},
+		{
+			"type": "input",
+			"block_id" : "day_select",
+			"element": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a day",
+					"emoji": true
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Monday",
+							"emoji": true
+						},
+						"value": "mon"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Tuesday",
+							"emoji": true
+						},
+						"value": "tue"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Wednesday",
+							"emoji": true
+						},
+						"value": "wed"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Thursday",
+							"emoji": true
+						},
+						"value": "thu"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Friday",
+							"emoji": true
+						},
+						"value": "fri"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Saturday",
+							"emoji": true
+						},
+						"value": "sat"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Sunday",
+							"emoji": true
+						},
+						"value": "sun"
+					}
+				],
+				"action_id": "weekday_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Choose week day",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id" : "tbegin_select",
+			"element": {
+				"type": "timepicker",
+				"action_id": "time_begin_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Start time (type in)",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "Note: You need to start typing in the field to select time",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "tend_select",
+			"element": {
+				"type": "timepicker",
+				"action_id": "time_end_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "End time (type in)",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "Note: You need to start typing in the field to select time",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "approver_select",
+			"element": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select approver",
+					"emoji": true
+				},
+				"initial_option": {
+					"text": {
+						"type": "plain_text",
+						"text": "Tolya Evdokimov",
+						"emoji": true
+					},
+					"value": "U03PZ5JV92N"
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Tolya Evdokimov",
+							"emoji": true
+						},
+						"value": "U03PZ5JV92N"
+					}
+				],
+				"action_id": "approver_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Approver",
+				"emoji": true
+			}
+		}
+	]
+}

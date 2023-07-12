@@ -1,0 +1,46 @@
+
+{
+	"color": "#f2c744",
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Someone has sent a new approval request to you. Please review and respond below.",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Name:* placeholder\t *Request:* placeholder \n*Begin:* placeholder\t *End:* placeholder\n *Day:* placeholder"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"emoji": true,
+						"text": "Approve"
+					},
+					"style": "primary",
+					"value": "add_req_approve"
+				},
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"emoji": true,
+						"text": "Deny"
+					},
+					"style": "danger",
+					"value": "add_req_deny"
+				}
+			]
+		}
+	]
+}
