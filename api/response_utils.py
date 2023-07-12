@@ -8,11 +8,10 @@ def get_modal(modal_name):
     return read
 
 def get_res_str(msg_type):
-    match msg_type:
-        case "not valid":
-            return "Hmmm... It seems like you are not a part of a project yet or you don't need to test participants right now. If you think this is a mistake, reach out to the lab coordinator."
-        case "summary":
-            return ""
+    if msg_type == "not valid":
+        return "Hmmm... It seems like you are not a part of a project yet or you don't need to test participants right now. If you think this is a mistake, reach out to the lab coordinator."
+    elif "summary":
+        return ""
         
 def verify_day_time(tbegin, tend, day, location):
     b = time(int(tbegin.split(':')[0]), int(tbegin.split(':')[1]))
