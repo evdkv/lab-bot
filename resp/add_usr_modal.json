@@ -1,0 +1,45 @@
+{
+	"type": "modal",
+	"callback_id" : "adm_add_usr",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Add user to schedule",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Please use this form to add new members to the scheduling program. Once added, users will be able to interact with the bot.",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Select a user to add to the scheduling program:*"
+			},
+			"accessory": {
+				"type": "users_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select a user",
+					"emoji": true
+				},
+				"action_id": "users_select-action"
+			}
+		}
+	]
+}
