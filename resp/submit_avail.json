@@ -1,0 +1,200 @@
+{
+	"type": "modal",
+	"callback_id" : "submit_avail",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Robbins Lab Bot",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Submit Testing Availability",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Keep in mind that start/end times should be the start/end times of the participant testing slot. This means that you should account for time to set up (5-10 mins), time to travel from/to classes, etc. \n \n *You should be ready to test participants at the start of the slot!*"
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"block_id" : "Monday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "monday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Monday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "ex.: 9:30am-12:00pm, 4:00pm-6:00pm",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Tuesday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "tuesday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Tuesday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "ex.: 9:30am-12:00pm, 4:00pm-6:00pm",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Wednesday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "wednesday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Wednesday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "ex.: 9:30am-12:00pm, 4:00pm-6:00pm",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Thursday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "thursday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Thursday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "ex.: 9:30am-12:00pm, 4:00pm-6:00pm",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Friday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "friday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Friday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "ex.: 9:30am-12:00pm, 4:00pm-6:00pm",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Saturday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "saturday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Saturday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "This is optional. Enter N/A if not available.",
+					"emoji": true
+				}
+			]
+		},
+		{
+			"type": "input",
+			"block_id" : "Sunday",
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "sunday"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Sunday",
+				"emoji": true
+			}
+		},
+		{
+			"type": "context",
+			"elements": [
+				{
+					"type": "plain_text",
+					"text": "This is optional. Enter N/A if not available.",
+					"emoji": true
+				}
+			]
+		}
+	]
+}

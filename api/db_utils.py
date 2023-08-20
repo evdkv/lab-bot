@@ -58,3 +58,6 @@ def db_add_event(data, effective):
               "day" : data["day"], "effective" : effective}
     db.collection(data["day"]).document(doc_id).set(record)
     return True
+
+def db_add_user():
+    pass

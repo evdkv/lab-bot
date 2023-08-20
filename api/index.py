@@ -135,8 +135,39 @@ def add_slot_deny(payload, user_id):
     except SlackApiError as e:
         print(e)
         return jsonify({"status": "error", "message": str(e)}), 500
+    
+def add_new_usr(payload, user_id):
+    """
+        Handles adding a new user to scheduling system by admin. Writes to the DB
+    """
 
+    try:
+        
+        pass
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
 
+def send_avail(payload, user_id):
+    # Extract the info and assemble the message
+    message = f"Here is <@{user_id}>'s availability: \n\n"
+    valid_ids = ['Monday', "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    for bid in valid_ids:
+       message += bid + ": " + payload['view']['state']['values'][bid][bid.lower()]['value'] + "\n"
+
+    try:
+        web_client.chat_postMessage(
+            channel="U03PZ5JV92N",
+            text=message)
+        web_client.chat_postMessage(
+            channel=user_id,
+            text=f":white_check_mark:Hi, <@{user_id}>! Your testing availability was submitted successfully!")
+        return "", 200
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
 @app.route('/api/slack/start', methods=['POST'])
 def handle_start_slash():
     """
@@ -275,6 +306,83 @@ def handle_add_slash():
         print(e)
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/slack/admin-addusr', methods=['POST'])
+def handle_user_add():
+    data = request.get_data().decode('utf-8')
+    payload = unquote_plus(data)
+
+    # Validate the request
+    if payload.startswith('payload='):
+        payload = payload[len('payload='):]
+    if not signature_verifier.is_valid_request(data, request.headers):
+        return jsonify({'status': 'invalid_request'}), 403
+    if payload is None:
+        return jsonify({"status": "error", "message": "missing_payload"}), 400
+    
+    payload = parse_qs(payload)
+    
+    # Determine the payload type
+    requester_id = payload["user_id"][0]
+
+    try:
+        requester_info = web_client.users_info(user=requester_id)
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+    if requester_info.get("user")["is_admin"]:
+        web_client.views_open(
+            trigger_id=payload["trigger_id"][0], 
+            view=get_modal("add_usr_modal.json")
+        )
+    else:
+        web_client.chat_postMessage(
+            channel=requester_id,
+            text="You have to be a workspace admin to do that."
+        )
+
+    return "", 200
+
+@app.route('/api/slack/availability', methods=['POST'])
+def handle_avail_submission():
+    """
+        Handles the availability submission form
+    """
+    data = request.get_data().decode('utf-8')
+    payload = unquote_plus(data)
+
+    # Validate the payload
+    if payload.startswith('payload='):
+        payload = payload[len('payload='):]
+    if not signature_verifier.is_valid_request(data, request.headers):
+        return jsonify({'status': 'invalid_request'}), 403
+    
+    payload = parse_qs(payload)
+
+    if payload is None:
+        return jsonify({"status": "error", "message": "missing_payload"}), 400
+    
+    # Get user_id from the payload and validate in the DB
+    user_id = payload['user_id'][0]
+    valid, _ = db_valid_member(user_id)
+
+    try:
+        if valid:
+            web_client.views_open(
+                trigger_id=payload["trigger_id"][0], 
+                view=get_modal("submit_avail.json")
+                )
+        else:
+            web_client.chat_postMessage(
+            channel=user_id,
+            text=get_res_str("not valid")
+            )
+
+        return "", 200
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/slack/interactive-endpoint', methods=['POST'])
 def handle_interactivity():
@@ -300,16 +408,28 @@ def handle_interactivity():
         callback = payload['view']['callback_id']
         user_db_info = db_get_user_info(user_id)
     elif payload["type"] == "block_actions":
-        user_id = payload["channel"]["id"]
-        callback = payload["actions"][0]["value"]
+        try:
+            user_id = payload["channel"]["id"]
+            callback = payload["actions"][0]["value"]
+        # Special case for user selector interactivity. It is skipped and returns 200 later on.
+        except KeyError:
+            user_id = payload["user"]["id"]
+            callback = payload["actions"][0]["action_id"]
 
-    # Determine the type of interaction and handle it
+    # Determine the type of interaction and handle it:
     if callback == 'add_slot_form':
         return add_slot_request(payload, user_db_info, user_id)
     elif callback == "add_req_approve":
         return add_slot_approve(payload, user_id)
     elif callback == "add_req_deny":
         return add_slot_deny(payload, user_id)
+    elif callback == "adm_add_usr":
+        print("Printing the right payload")
+        print(payload)
+    elif callback == "submit_avail":
+        return send_avail(payload, user_id)
+    elif callback == "users_select-action" and payload["type"] == "block_actions":
+        return "", 200
     
     # Return the internal server error if the interaction is unhandled
     return jsonify({"status": "error", "message": "no handlers for this interaction"}), 500
