@@ -1,0 +1,76 @@
+{
+	"type": "modal",
+	"callback_id": "adm_announce",
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"title": {
+		"type": "plain_text",
+		"text": "Robbins Lab Bot",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "divider"
+		},
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Make an Announcement",
+				"emoji": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id" : "message_content",
+			"element": {
+				"type": "plain_text_input",
+				"multiline": true,
+				"action_id": "input-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Enter your announcement",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"block_id" : "destinations",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*Enter the destination*"
+			},
+			"accessory": {
+				"type": "multi_conversations_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select conversations",
+					"emoji": true
+				},
+				"action_id": "channel_action"
+			}
+		},
+		{
+			"type": "input",
+			"block_id" : "timestamp",
+			"element": {
+				"type": "datetimepicker",
+				"action_id": "date_action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Schedule the announcement",
+				"emoji": true
+			}
+		}
+	]
+}

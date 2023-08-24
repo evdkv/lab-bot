@@ -149,6 +149,9 @@ def add_new_usr(payload, user_id):
         return jsonify({"status": "error", "message": str(e)}), 500
 
 def send_avail(payload, user_id):
+    """
+        Sends the user availability to the admin.
+    """
     # Extract the info and assemble the message
     message = f"Here is <@{user_id}>'s availability: \n\n"
     valid_ids = ['Monday', "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -167,7 +170,32 @@ def send_avail(payload, user_id):
     except SlackApiError as e:
         print(e)
         return jsonify({"status": "error", "message": str(e)}), 500
-    
+
+def schedule_announcement(payload, user_id):
+    """
+        Schedules a Slack message and sends it to all selected destinations at a certain time.
+    """
+    message_content = payload['view']['state']['values']['message_content']['input-action']['value']
+    destinations = payload['view']['state']['values']['destinations']['channel_action']['selected_conversations']
+    timestamp = payload['view']['state']['values']['timestamp']['date_action']['selected_date_time']
+    dest_list = []
+
+    try:
+        for destination in destinations:
+            web_client.chat_scheduleMessage(
+                channel=destination,
+                post_at=timestamp,
+                text=message_content) 
+            dest_list.append(f"<@{destination}>") 
+        web_client.chat_postMessage(
+            channel=user_id,
+            text=f":white_check_mark:Hi, <@{user_id}>! Your announcement was sent sucessfully!" \
+                f" Here is what you submitted: \n\n {message_content} \n\n Here are the recepients: {', '.join(dest_list)}")
+        return "", 200
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/api/slack/start', methods=['POST'])
 def handle_start_slash():
     """
@@ -308,6 +336,9 @@ def handle_add_slash():
 
 @app.route('/api/slack/admin-addusr', methods=['POST'])
 def handle_user_add():
+    """
+        Add users to the DB. Feature cirrently in progress.
+    """
     data = request.get_data().decode('utf-8')
     payload = unquote_plus(data)
 
@@ -384,6 +415,48 @@ def handle_avail_submission():
         print(e)
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/api/slack/admin-announce', methods=['POST'])
+def handle_announce():
+    """
+        Handles the admin announcement modal. Checks for the admin status in the
+        workspace and opens the announcement modal.
+    """
+    data = request.get_data().decode('utf-8')
+    payload = unquote_plus(data)
+
+    # Validate the request
+    if payload.startswith('payload='):
+        payload = payload[len('payload='):]
+    if not signature_verifier.is_valid_request(data, request.headers):
+        return jsonify({'status': 'invalid_request'}), 403
+    if payload is None:
+        return jsonify({"status": "error", "message": "missing_payload"}), 400
+    
+    payload = parse_qs(payload)
+    
+    # Determine the payload type
+    requester_id = payload["user_id"][0]
+
+    try:
+        requester_info = web_client.users_info(user=requester_id)
+    except SlackApiError as e:
+        print(e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+    if requester_info.get("user")["is_admin"]:
+        web_client.views_open(
+            trigger_id=payload["trigger_id"][0], 
+            view=get_modal("adm_announce_modal.json")
+        )
+    else:
+        web_client.chat_postMessage(
+            channel=requester_id,
+            text="You have to be a workspace admin to do that."
+        )
+
+    return "", 200
+
 @app.route('/api/slack/interactive-endpoint', methods=['POST'])
 def handle_interactivity():
     """
@@ -428,6 +501,8 @@ def handle_interactivity():
         print(payload)
     elif callback == "submit_avail":
         return send_avail(payload, user_id)
+    elif callback == "adm_announce":
+        return schedule_announcement(payload, user_id)
     elif callback == "users_select-action" and payload["type"] == "block_actions":
         return "", 200
     
