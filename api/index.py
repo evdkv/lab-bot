@@ -337,7 +337,7 @@ def handle_add_slash():
 @app.route('/api/slack/admin-addusr', methods=['POST'])
 def handle_user_add():
     """
-        Add users to the DB. Feature cirrently in progress.
+        Add users to the DB. Feature currently in progress.
     """
     data = request.get_data().decode('utf-8')
     payload = unquote_plus(data)
