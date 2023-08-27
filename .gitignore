@@ -14,3 +14,4 @@ venv.bak/
 
 # Other
 cloud_cert.json
+.DS_Store
