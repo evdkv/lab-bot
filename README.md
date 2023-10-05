@@ -27,6 +27,6 @@ an option to either approve it or reject it. The requester gets notified of the 
 If approved, the event is added to the database and will appear on the lab calendar after
 the time it's supposed to go in effect. 
 
-![approve](/img/cal.gif)
+![cal](/img/cal.gif)
 
 *Project in progress*
