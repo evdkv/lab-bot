@@ -2,4 +2,3 @@ Flask==2.2.2
 slack_sdk
 firebase_admin
 python-dotenv
-urllib
