@@ -1,4 +1,4 @@
-Flask==2.2.2
+Flask==2.2.5
 slack_sdk
 firebase_admin
 python-dotenv
